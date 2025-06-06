@@ -60,21 +60,9 @@
             box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            background: #5EAD64;
-            color: white;
-            padding: 10px 20px;
+        /* Audio Player Styling */
+        .audio-container {
             margin-top: 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            background: #76C77E;
         }
 
         /* Footer */
@@ -100,17 +88,13 @@
 
     <div class="section">
         <h2>🎙 Live Streaming Now!</h2>
-    </audio>
-        <audio><audio controls autoplay loop>
-    <source> src="https://radioter.io/streams/dailydosesradio" type="audio/mp3"> </audio>
-    </audio>
+        <div class="audio-container">
+            <audio controls autoplay loop>
+                <source src="https://radioter.io/streams/dailydosesradio" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
         <a href="playlist.html" class="btn">View Show Schedule</a>
-    </div>
-
-    <div class="section">
-        <h2>📢 Featured Shows</h2>
-        <p>🔥 Tune in for exclusive interviews, curated playlists, and non-stop music.</p>
-        <a href=""playlist.html"" class="btn">Explore Playlists</a>
     </div>
 
     <footer>
