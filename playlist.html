@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Doses Radio - Schedule</title>
+    <style>
+        /* General Reset */
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Green Gradient Background */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #A8E6CF, #D4F3CC, #9AE69A, #8DDC88);
+            color: #2E663D;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #76C77E, #A8E6CF);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Navigation */
+        nav {
+            background: #5EAD64;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2rem;
+        }
+
+        nav a:hover {
+            color: #C0F2A8;
+            text-decoration: underline;
+        }
+
+        /* Show Item */
+        .show-item {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            font-weight: bold;
+            color: #2E663D;
+        }
+
+        /* Buttons */
+        button {
+            background: #5EAD64;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background: #76C77E;
+        }
+
+        /* Playlist */
+        #userPlaylist {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: #5EAD64;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📅 Daily Doses Radio - Broadcast Schedule</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">🔙 Home</a>
+    </nav>
+
+    <main>
+        <section id="filter">
+            <h2>Filter by Genre</h2>
+            <select id="genreFilter">
+                <option value="all">All Genres</option>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+                <option value="hiphop">Hip-Hop</option>
+                <option value="jazz">Jazz</option>
+            </select>
+        </section>
+
+        <section id="schedule">
+            <h2>Upcoming Shows</h2>
+            <div id="shows">
+                <!-- Shows will be dynamically loaded -->
+            </div>
+        </section>
+
+        <section id="playlist">
+            <h2>🎧 Your Saved Playlist</h2>
+            <ul id="userPlaylist">
+                <p>No songs saved yet.</p>
+            </ul>
+            <button onclick="clearPlaylist()">🗑 Clear Playlist</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Daily Doses Radio. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Sample schedule data
+        const shows = [
+            { title: "Morning Beats", time: "08:00", genre: "pop" },
+            { title: "Rock Anthem Hour", time: "12:00", genre: "rock" },
+            { title: "Hip-Hop Vibez", time: "15:00", genre: "hiphop" },
+            { title: "Jazz Evening Lounge", time: "20:00", genre: "jazz" },
+        ];
+
+        const showsContainer = document.getElementById("shows");
+        const genreFilter = document.getElementById("genreFilter");
+        const userPlaylist = document.getElementById("userPlaylist");
+
+        // Load schedule dynamically
+        function loadSchedule() {
+            showsContainer.innerHTML = "";
+            let selectedGenre = genreFilter.value;
+
+            shows.forEach(show => {
+                if (selectedGenre === "all" || selectedGenre === show.genre) {
+                    let showElement = document.createElement("div");
+                    showElement.classList.add("show-item");
+                    showElement.innerHTML = `
+                        <h3>${show.title} 🎶</h3>
+                        <p>⏰ Starts at: ${show.time}</p>
+                        <p>🎧 Genre: ${show.genre}</p>
+                        <p>🕰 Countdown: <span class="countdown" data-time="${show.time}"></span></p>
+                        <button onclick="setReminder('${show.title}', '${show.time}')">🔔 Set Reminder</button>
+                        <button onclick="saveToPlaylist('${show.title}')">💾 Save to Playlist</button>
+                    `;
+                    showsContainer.appendChild(showElement);
+                }
+            });
+
+            startCountdowns();
+        }
+
+        // Countdown Timer
+        function startCountdowns() {
+            document.querySelectorAll(".countdown").forEach(timer => {
+                let showTime = timer.getAttribute("data-time");
+                let now = new Date();
+                let scheduledTime = new Date();
+                let [hours, minutes] = showTime.split(":").map(Number);
+
+                scheduledTime.setHours(hours);
+                scheduledTime.setMinutes(minutes);
+                scheduledTime.setSeconds(0);
+
+                if (scheduledTime < now) scheduledTime.setDate(now.getDate() + 1);
+
+                let interval = setInterval(() => {
+                    let diff = scheduledTime - new Date();
+                    let hoursLeft = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    let minutesLeft = Math.floor((diff / (1000 * 60)) % 60);
+                    let secondsLeft = Math.floor((diff / 1000) % 60);
+                    
+                    timer.innerText = `${hoursLeft}h ${minutesLeft}m ${secondsLeft}s`;
+
+                    if (diff <= 0) {
+                        timer.innerText = "🎵 LIVE NOW!";
+                        clearInterval(interval);
+                    }
+                }, 1000);
+            });
+        }
+
+        // Set Show Reminder
+        function setReminder(title, time) {
+            alert(`🔔 Reminder set for '${title}' at ${time}!`);
+        }
+
+        // Save to Playlist
+        function saveToPlaylist(title) {
+            let listItem = document.createElement("li");
+            listItem.textContent = title;
+            userPlaylist.appendChild(listItem);
+        }
+
+        // Clear Playlist
+        function clearPlaylist() {
+            userPlaylist.innerHTML = "<p>No songs saved yet.</p>";
+        }
+
+        genreFilter.addEventListener("change", loadSchedule);
+        document.addEventListener("DOMContentLoaded", loadSchedule);
+    </script>
+</body>
+</html>
+
+
